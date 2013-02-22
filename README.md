@@ -4,6 +4,13 @@ TCPDF plugin usage
 # Overview
 TCPDF plugin implements [TCPDF class for generating PDF documents](http://www.tcpdf.org/).
 
+# Installation
+
+1. Download the plugin from github.
+2. Unzip and rename it to Tcpdf.
+3. Move the Tcpdf folder into the plugins folder in your Zikula root directory.
+4. Go to Extensions module->System plugins and install the TCPDF plugin.
+
 # Usage
 
 ## PDF generation
