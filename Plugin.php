@@ -11,15 +11,8 @@
  * information regarding copyright and licensing.
  */
 
-class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin //implements Zikula_Plugin_AlwaysOnInterface
+class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin
 {
-    /**
-     * Defined presets
-     *
-     * @var array
-     */
-    #private $presets;
-
     /**
      * Get plugin meta data.
      *
@@ -28,8 +21,8 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin //implements Zikul
     protected function getMeta()
     {
         return array(
-            'displayname' => $this->__('tcpdf'),
-            'description' => $this->__('Provides tcpdf pdf generating library'),
+            'displayname' => $this->__('TCPDF'),
+            'description' => $this->__('Provides TCPDF pdf generating library'),
             'version'     => '1.0.0'
         );
     }
