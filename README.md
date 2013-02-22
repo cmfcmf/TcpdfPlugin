@@ -13,6 +13,12 @@ TCPDF plugin implements [TCPDF class for generating PDF documents](http://www.tc
 
 # Usage
 
+## External configuration file
+
+If you'd like to use an external configuration file, simply place it in:
+- `modules/Foo/lib/vendor/tcpdf_foo_config.php` (Zikula <= 1.3.5)
+- `modules/Foo/vendor/tcpdf_foo_config.php` (Zikula >= 1.3.6)
+
 ## PDF generation
 Simply add the two following lines of code. This will include the language files and the tcpdf config class:
 

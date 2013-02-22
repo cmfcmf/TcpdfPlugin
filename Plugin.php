@@ -49,6 +49,24 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin
      */
     public function initialize()
     {
+        $modname = ModUtil::getName();
+
+        if($modname !== false)
+        {
+            if(version_compare(Zikula_Core::VERSION_NUM, "1.3.5", "<="))
+                $extConfigPath = "modules/$modname/lib/vendor/tcpdf_" . strToLower($modname) . "_config.php";
+            else
+                $extConfigPath = "modules/$modname/vendor/tcpdf_" . strToLower($modname) . "_config.php";
+
+            //Try to include an external config file.
+            if(file_exists($extConfigPath))
+            {
+                define('K_TCPDF_EXTERNAL_CONFIG', true);
+                $configfile = DataUtil::formatForOS($extConfigPath);
+                require_once $configfile;
+            }
+        }
+
         $classfile = DataUtil::formatForOS('plugins/Tcpdf/lib/vendor/tcpdf/tcpdf.php');
         require_once($classfile);
         
