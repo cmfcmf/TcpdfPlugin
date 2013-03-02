@@ -11,7 +11,7 @@
  * information regarding copyright and licensing.
  */
 
-class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin
+class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_Plugin_AlwaysOnInterface
 {
     /**
      * Get plugin meta data.
@@ -22,7 +22,7 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin
     {
         return array(
             'displayname' => $this->__('TCPDF'),
-            'description' => $this->__('Provides TCPDF pdf generating library'),
+            'description' => $this->__('Provides the TCPDF pdf generating library'),
             'version'     => '1.0.0'
         );
     }
@@ -111,35 +111,6 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin
     }
 
     /**
-     * Convenience Module SetVar.
-     *
-     * @param string $key   Key.
-     * @param mixed  $value Value, default empty.
-     *
-     * @return object This.
-     */
-    public function setVar($key, $value='')
-    {
-        ModUtil::setVar($this->getServiceId(), $key, $value);
-
-        return $this;
-    }
-
-    /**
-     * Convenience Module SetVars.
-     *
-     * @param array $vars Array of key => value.
-     *
-     * @return object This.
-     */
-    public function setVars(array $vars)
-    {
-        ModUtil::setVars($this->getServiceId(), $vars);
-
-        return $this;
-    }
-
-    /**
      * Convenience Module GetVar.
      *
      * @param string  $key     Key.
@@ -150,41 +121,5 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin
     public function getVar($key, $default=false)
     {
         return ModUtil::getVar($this->getServiceId(), $key, $default);
-    }
-
-    /**
-     * Convenience Module GetVars for all keys in this module.
-     *
-     * @return mixed
-     */
-    public function getVars()
-    {
-        return ModUtil::getVar($this->getServiceId());
-    }
-
-    /**
-     * Convenience Module DelVar.
-     *
-     * @param string $key Key.
-     *
-     * @return object This.
-     */
-    public function delVar($key)
-    {
-        ModUtil::delVar($this->getServiceId(), $key);
-
-        return $this;
-    }
-
-    /**
-     * Convenience Module DelVar for all keys for this module.
-     *
-     * @return object This.
-     */
-    public function delVars()
-    {
-        ModUtil::delVar($this->getServiceId());
-
-        return $this;
     }
 }
