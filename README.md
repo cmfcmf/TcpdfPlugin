@@ -20,6 +20,21 @@ If you'd like to use an external configuration file, simply place it in:
 - `modules/Foo/lib/vendor/tcpdf_foo_config.php` (Zikula <= 1.3.5)
 - `modules/Foo/vendor/tcpdf_foo_config.php` (Zikula >= 1.3.6)
 
+Only define values in there, which are different from the original config file.
+
+*Example: If you'd like to change the `PDF_FONT_SIZE_MAIN` and `PDF_MARGIN_TOP`, your config file should look like this:*
+```php
+<?php
+/**
+ * custom top margin
+ */
+define ('PDF_MARGIN_TOP', 5);
+/**
+ * custom main font size
+ */
+define ('PDF_FONT_SIZE_MAIN', 30);
+?>
+```
 *Please note: I chose the location looking at the News module. If you think there could be a better place or naming, please open an issue / make a pull request!*
 ## PDF generation
 Simply add the two following lines of code. This will include the language files and the tcpdf config class:
