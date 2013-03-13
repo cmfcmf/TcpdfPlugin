@@ -8,13 +8,25 @@ The TCPDF plugin implements the [TCPDF class for generating PDF documents](http:
 
 # Installation
 
-1. Download the plugin from github.
-2. Unzip and rename it to Tcpdf.
-3. Move the Tcpdf folder into the plugins folder in your Zikula root directory.
+1. Download the plugin from github and unzip it.
+2. Put the content of the `plugins` folder in your Zikula `plugins` folder.
+3. Put the content of the `themes` folder in your Zikula `themes` folder.
 
 # Usage
 
-## External configuration file
+## For normal users
+
+### Smarty modifier for templates
+
+You can add the `{pdfLink tag=true __text='Download as PDF'}` modifier to your template. This will generate a link for downloading the current page as PDF file.
+
+### Direct link
+
+If you add `&theme=pdf` to any link, the page will be outputed as PDF file.
+
+## For developers
+
+### External configuration file
 
 If you'd like to use an external configuration file, simply place it in:
 - `modules/Foo/lib/vendor/tcpdf_foo_config.php` (Zikula <= 1.3.5)
@@ -36,7 +48,7 @@ define ('PDF_FONT_SIZE_MAIN', 30);
 ?>
 ```
 *Please note: I chose the location looking at the News module. If you think there could be a better place or naming, please open an issue / make a pull request!*
-## PDF generation
+### PDF generation
 Simply add the two following lines of code. This will include the language files and the tcpdf config class:
 
     $tcpdf = PluginUtil::loadPlugin('SystemPlugin_Tcpdf_Plugin');
