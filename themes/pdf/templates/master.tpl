@@ -1,0 +1,2 @@
+{$maincontent|generatePdf}
+
