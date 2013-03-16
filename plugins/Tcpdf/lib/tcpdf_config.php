@@ -36,9 +36,6 @@
  * @since 2004-10-27
  */
 
-// If you define the constant K_TCPDF_EXTERNAL_CONFIG, the following settings will be ignored.
-
-if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 
 	// DOCUMENT_ROOT fix for IIS Webserver
 	if ((!isset($_SERVER['DOCUMENT_ROOT'])) OR (empty($_SERVER['DOCUMENT_ROOT']))) {
@@ -52,20 +49,11 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 		}
 	}
 
-	// be sure that the end slash is present
-	$_SERVER['DOCUMENT_ROOT'] = str_replace('//', '/', $_SERVER['DOCUMENT_ROOT'].'/');
-
-	// Automatic calculation for the following K_PATH_MAIN constant
-	$k_path_main = str_replace( '\\', '/', realpath(substr(dirname(__FILE__), 0, 0-strlen('config'))));
-	if (substr($k_path_main, -1) != '/') {
-		$k_path_main .= '/';
-	}
-
 	/**
 	 * Installation path (/var/www/tcpdf/).
 	 * By default it is automatically calculated but you can also set it as a fixed string to improve performances.
 	 */
-	define ('K_PATH_MAIN', $_SERVER['DOCUMENT_ROOT'] . 'plugins/Tcpdf/lib/vendor/tcpdf');
+	define ('K_PATH_MAIN', $_SERVER['DOCUMENT_ROOT'] . '/plugins/Tcpdf/lib/vendor/tcpdf');
 
 	// Automatic calculation for the following K_PATH_URL constant
 	$k_path_url = $k_path_main; // default value for console mode
@@ -104,7 +92,7 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	/**
 	 *images directory
 	 */
-	define ('K_PATH_IMAGES', $_SERVER['DOCUMENT_ROOT']);
+	define ('K_PATH_IMAGES', $_SERVER['DOCUMENT_ROOT'] . '/');
 
 	/**
 	 * blank image
@@ -134,7 +122,7 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	/**
 	 * header title
 	 */
-	define ('PDF_HEADER_TITLE', 'TCPDF Example');
+	define ('PDF_HEADER_TITLE', PageUtil::getVar('title'));
 
 	/**
 	 * header description string
@@ -145,6 +133,7 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	 * image logo
 	 */
 	define ('PDF_HEADER_LOGO', 'images/logo.gif');
+
 	/**
 	 * header logo image width [mm]
 	 */
@@ -250,7 +239,6 @@ if (!defined('K_TCPDF_EXTERNAL_CONFIG')) {
 	 * if true adn PHP version is greater than 5, then the Error() method throw new exception instead of terminating the execution.
 	 */
 	define('K_TCPDF_THROW_EXCEPTION_ERROR', false);
-}
 
 //============================================================+
 // END OF FILE

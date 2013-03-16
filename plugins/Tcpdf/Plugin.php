@@ -75,12 +75,13 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
      */
     public function createPdf($orientation='P', $unit='mm', $format='A4', $unicode=true, $encoding='UTF-8', $diskcache=false, $pdfa=false, $langcode='')
     {
+        $this->checkPermission();
+
+        $this->includeLangFile($langcode);
         $this->includeConfigFile();
-        
+
         $classfile = DataUtil::formatForOS('plugins/Tcpdf/lib/vendor/tcpdf/tcpdf.php');
         require_once($classfile);
-        
-        $this->includeLangFile($langcode);
         
         $pdf = new TCPDF($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
         
@@ -131,19 +132,21 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
     
     private function setStandardConfig(&$pdf)
     {
+        global $l; //Used by Tcpdf for language
+
         // set document information
         $pdf->SetCreator(PDF_CREATOR);
         $pdf->SetAuthor(PDF_AUTHOR);
-        $pdf->SetTitle(PageUtil::getVar('title'));
+        $pdf->SetTitle(PDF_HEADER_TITLE);
         $pdf->SetSubject(PageUtil::getVar('title'));
         $pdf->SetKeywords(System::getVar('metakeywords'));
 
         // set default header data
-        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE.' 001', PDF_HEADER_STRING);
+        $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
         $pdf->setFooterData($tc=array(0,64,0), $lc=array(0,64,128));
 
         // set header and footer fonts
-        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN + 4));
         $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 
         // set default monospaced font
@@ -168,11 +171,7 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
         // set default font subsetting mode
         $pdf->setFontSubsetting(true);
 
-        // Set font
-        // dejavusans is a UTF-8 Unicode font, if you only need to
-        // print standard ASCII chars, you can use core fonts like
-        // helvetica or times to reduce file size.
-        $pdf->SetFont('dejavusans', '', 14, '', true);
+        $pdf->SetFont(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN);
     }
     
     /**
@@ -190,12 +189,18 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
         if($langcode == 'deu') {
             $langcode = 'ger';
         }
-
         $langfile = DataUtil::formatForOS("plugins/Tcpdf/lib/vendor/tcpdf/config/lang/{$langcode}.php");
         if (!file_exists($langfile)) {
             $langfile = DataUtil::formatForOS('plugins/Tcpdf/lib/vendor/tcpdf/config/lang/eng.php');
         }
         require_once($langfile);
+    }
+
+    private function checkPermission()
+    {
+        $cacheDir = $this->baseDir . '/lib/vendor/tcpdf/cache';
+        if(!is_writable($cacheDir))
+            die($this->__("$cacheDir must be writeable!"));
     }
 
     /**
