@@ -30,7 +30,7 @@
 
 /**
  * Configuration file for TCPDF.
- * @author Nicola Asuni
+ * @author Nicola Asuni, edited by Christian Flach for Zikula TCPDF Plugin
  * @package com.tecnick.tcpdf
  * @version 4.9.005
  * @since 2004-10-27
@@ -48,12 +48,19 @@
 			$_SERVER['DOCUMENT_ROOT'] = '/';
 		}
 	}
+	
+	// Automatic calculation for the following K_PATH_MAIN constant
+    $k_path_main = str_replace( '\\', '/', realpath(dirname(__FILE__)));
+    if (substr($k_path_main, -1) != '/') {
+        $k_path_main .= '/';
+    }
+    $k_path_main .= '/vendor/tcpdf';
 
 	/**
 	 * Installation path (/var/www/tcpdf/).
 	 * By default it is automatically calculated but you can also set it as a fixed string to improve performances.
 	 */
-	define ('K_PATH_MAIN', $_SERVER['DOCUMENT_ROOT'] . '/plugins/Tcpdf/lib/vendor/tcpdf');
+	define ('K_PATH_MAIN', $k_path_main);
 
 	// Automatic calculation for the following K_PATH_URL constant
 	$k_path_url = $k_path_main; // default value for console mode
@@ -92,12 +99,12 @@
 	/**
 	 *images directory
 	 */
-	define ('K_PATH_IMAGES', $_SERVER['DOCUMENT_ROOT'] . '/');
+	define ('K_PATH_IMAGES', '');
 
 	/**
 	 * blank image
 	 */
-	define ('K_BLANK_IMAGE', K_PATH_MAIN.'images/_blank.png');
+	define ('K_BLANK_IMAGE', K_PATH_MAIN .'images/_blank.png');
 
 	/**
 	 * page format
