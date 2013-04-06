@@ -164,37 +164,37 @@
 	/**
 	 * top margin
 	 */
-	define ('PDF_MARGIN_TOP', 27);
+	define ('PDF_MARGIN_TOP', 20);
 
 	/**
 	 * bottom margin
 	 */
-	define ('PDF_MARGIN_BOTTOM', 25);
+	define ('PDF_MARGIN_BOTTOM', 15);
 
 	/**
 	 * left margin
 	 */
-	define ('PDF_MARGIN_LEFT', 15);
+	define ('PDF_MARGIN_LEFT', 20);
 
 	/**
 	 * right margin
 	 */
-	define ('PDF_MARGIN_RIGHT', 15);
+	define ('PDF_MARGIN_RIGHT', 10);
 
 	/**
 	 * default main font name
 	 */
-	define ('PDF_FONT_NAME_MAIN', 'helvetica');
+	define ('PDF_FONT_NAME_MAIN', 'dejavusanscondensed');
 
 	/**
 	 * default main font size
 	 */
-	define ('PDF_FONT_SIZE_MAIN', 10);
+	define ('PDF_FONT_SIZE_MAIN', 9);
 
 	/**
 	 * default data font name
 	 */
-	define ('PDF_FONT_NAME_DATA', 'helvetica');
+	define ('PDF_FONT_NAME_DATA', 'dejavusans');
 
 	/**
 	 * default data font size
@@ -204,7 +204,7 @@
 	/**
 	 * default monospaced font name
 	 */
-	define ('PDF_FONT_MONOSPACED', 'courier');
+	define ('PDF_FONT_MONOSPACED', 'dejavusansmono');
 
 	/**
 	 * ratio used to adjust the conversion of pixels to user units
