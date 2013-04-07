@@ -4,7 +4,7 @@
  *
  * For more information and bug-reporting, visit https://www.github.com/cmfcmf/Tcpdf.
  */
-class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_Plugin_AlwaysOnInterface
+class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_Plugin_ConfigurableInterface
 {
     /**
      * Get plugin meta data.
@@ -16,21 +16,31 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
         return array(
             'displayname' => $this->__('TCPDF'),
             'description' => $this->__('Provides the TCPDF pdf generating library'),
-            'version'     => '1.0.1'
+            'version'     => '1.0.3'
         );
     }
 
+
     /**
-     * Checks plugin version and performs install/upgrade routine when needed.
+     * Performs install routine.
+     *
+     * @return bool
      */
-    public function preInitialize()
+    public function install()
     {
-        $version = $this->getVar('version', false);
-        if (!$version) {
-            $this->install();
-        } elseif ($version !==  $this->getMetaVersion()) {
-            $this->upgrade($version);
-        }
+        return true;
+    }
+
+    /**
+     * Performs upgrade routine.
+     *
+     * @param string $oldVersion
+     *
+     * @return bool
+     */
+    public function upgrade($oldVersion)
+    {
+        return true;
     }
 
     /**
@@ -54,6 +64,16 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
     public function registerPlugins(Zikula_Event $event)
     {
         $event->getSubject()->addPluginDir("{$this->baseDir}/templates/plugins");
+    }
+
+    /**
+     * Return controller instance.
+     *
+     * @return Zikula_Controller_AbstractPlugin
+     */
+    public function getConfigurationController()
+    {
+        return new SystemPlugin_Tcpdf_Configuration($this->serviceManager, $this);
     }
 
     /**
@@ -146,7 +166,7 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
         $pdf->setFooterData($tc=array(0,64,0), $lc=array(0,64,128));
 
         // set header and footer fonts
-        $pdf->setHeaderFont(Array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN + 4));
+        $pdf->setHeaderFont(Array(PDF_FONT_NAME_HEADER, '', PDF_FONT_SIZE_HEADER));
         $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 
         // set default monospaced font
@@ -201,40 +221,5 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
         $cacheDir = $this->baseDir . '/lib/vendor/tcpdf/cache';
         if(!is_writable($cacheDir))
             die($this->__("$cacheDir must be writeable!"));
-    }
-
-    /**
-     * Performs install routine.
-     *
-     * @return bool
-     */
-    public function install()
-    {
-        return true;
-    }
-
-    /**
-     * Performs upgrade routine.
-     *
-     * @param string $oldVersion
-     *
-     * @return bool
-     */
-    public function upgrade($oldVersion)
-    {
-        return true;
-    }
-
-    /**
-     * Convenience Module GetVar.
-     *
-     * @param string  $key     Key.
-     * @param boolean $default Default, false if not found.
-     *
-     * @return mixed
-     */
-    public function getVar($key, $default=false)
-    {
-        return ModUtil::getVar($this->getServiceId(), $key, $default);
     }
 }

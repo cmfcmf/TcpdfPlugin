@@ -144,7 +144,7 @@
 	/**
 	 * header logo image width [mm]
 	 */
-	define ('PDF_HEADER_LOGO_WIDTH', 20);
+	define ('PDF_HEADER_LOGO_WIDTH', 15);
 
 	/**
 	 *  document unit of measure [pt=point, mm=millimeter, cm=centimeter, in=inch]
@@ -190,6 +190,16 @@
 	 * default main font size
 	 */
 	define ('PDF_FONT_SIZE_MAIN', 9);
+
+    /**
+     * default header font name
+     */
+    define ('PDF_FONT_NAME_HEADER', 'dejavusanscondensed');
+
+    /**
+     * default main font size
+     */
+    define ('PDF_FONT_SIZE_HEADER', 11);
 
 	/**
 	 * default data font name
