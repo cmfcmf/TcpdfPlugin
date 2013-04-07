@@ -12,12 +12,6 @@ class SystemPlugin_Tcpdf_Configuration extends Zikula_Controller_AbstractPlugin
      */
     protected $plugin;
 
-    protected function postInitialize()
-    {
-        // In this controller we don't want caching to be enabled.
-        $this->view->setCaching(false);
-    }
-
     /**
      * Fetch and render the configuration template.
      *
@@ -30,5 +24,11 @@ class SystemPlugin_Tcpdf_Configuration extends Zikula_Controller_AbstractPlugin
             ->assign('footer', ModUtil::func('Admin', 'admin', 'adminfooter'));
 
         return $this->getView()->fetch('configuration.tpl');
+    }
+
+    protected function postInitialize()
+    {
+        // In this controller we don't want caching to be enabled.
+        $this->view->setCaching(false);
     }
 }

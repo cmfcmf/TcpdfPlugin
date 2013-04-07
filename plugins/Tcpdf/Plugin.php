@@ -7,21 +7,6 @@
 class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_Plugin_ConfigurableInterface
 {
     /**
-     * Get plugin meta data.
-     *
-     * @return array Meta data.
-     */
-    protected function getMeta()
-    {
-        return array(
-            'displayname' => $this->__('TCPDF'),
-            'description' => $this->__('Provides the TCPDF pdf generating library'),
-            'version'     => '1.0.3'
-        );
-    }
-
-
-    /**
      * Performs install routine.
      *
      * @return bool
@@ -80,20 +65,20 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
      * Creates a new pdf file.
      *
      * @param $orientation (string) page orientation.
-     * @param $unit (string) User measure unit.
-     * @param $format (mixed) The format used for pages.
-     * @param $unicode (boolean) TRUE means that the input text is unicode (default = true)
-     * @param $encoding (string) Charset encoding; default is UTF-8.
-     * @param $diskcache (boolean) If TRUE reduce the RAM memory usage by caching temporary data on filesystem (slower).
-     * @param $pdfa (boolean) If TRUE set the document to PDF/A mode.
+     * @param $unit        (string) User measure unit.
+     * @param $format      (mixed) The format used for pages.
+     * @param $unicode     (boolean) TRUE means that the input text is unicode (default = true)
+     * @param $encoding    (string) Charset encoding; default is UTF-8.
+     * @param $diskcache   (boolean) If TRUE reduce the RAM memory usage by caching temporary data on filesystem (slower).
+     * @param $pdfa        (boolean) If TRUE set the document to PDF/A mode.
      *
-     * @param $langcode (string) The language to use in the pdf. (default = system language)
+     * @param $langcode    (string) The language to use in the pdf. (default = system language)
      *
      * @return new TCPDF()
      *
      * @note The first seven parameters are inherited from tcpdf.
      */
-    public function createPdf($orientation='P', $unit='mm', $format='A4', $unicode=true, $encoding='UTF-8', $diskcache=false, $pdfa=false, $langcode='')
+    public function createPdf($orientation = 'P', $unit = 'mm', $format = 'A4', $unicode = true, $encoding = 'UTF-8', $diskcache = false, $pdfa = false, $langcode = '')
     {
         $this->checkPermission();
 
@@ -102,14 +87,44 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
 
         $classfile = DataUtil::formatForOS('plugins/Tcpdf/lib/vendor/tcpdf/tcpdf.php');
         require_once($classfile);
-        
+
         $pdf = new TCPDF($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
-        
+
         $this->setStandardConfig($pdf);
-        
+
         return $pdf;
     }
-    
+
+    private function checkPermission()
+    {
+        $cacheDir = $this->baseDir . '/lib/vendor/tcpdf/cache';
+        if (!is_writable($cacheDir)) {
+            die($this->__("$cacheDir must be writeable!"));
+        }
+    }
+
+    /**
+     * Includes the TCPDF language file.
+     *
+     * @param $langcode (string) The language to use in the pdf. (default = system language)
+     */
+    private function includeLangFile($langcode)
+    {
+        if (empty($langcode)) {
+            $lang = ZLanguage::getInstance();
+            $langcode = $lang->getLanguageCodeLegacy();
+        }
+
+        if ($langcode == 'deu') {
+            $langcode = 'ger';
+        }
+        $langfile = DataUtil::formatForOS("plugins/Tcpdf/lib/vendor/tcpdf/config/lang/{$langcode}.php");
+        if (!file_exists($langfile)) {
+            $langfile = DataUtil::formatForOS('plugins/Tcpdf/lib/vendor/tcpdf/config/lang/eng.php');
+        }
+        require_once($langfile);
+    }
+
     /**
      * Includes the TCPDF config file.
      *
@@ -133,23 +148,24 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
 
         //Try to include the config file of a module
         $modname = ModUtil::getName();
-        if($modname !== false) {
-            if(version_compare(Zikula_Core::VERSION_NUM, "1.3.5", "<="))
+        if ($modname !== false) {
+            if (version_compare(Zikula_Core::VERSION_NUM, "1.3.5", "<=")) {
                 $extConfigPath = "modules/$modname/lib/vendor/tcpdf_" . strToLower($modname) . "_config.php";
-            else
+            } else {
                 $extConfigPath = "modules/$modname/vendor/tcpdf_" . strToLower($modname) . "_config.php";
+            }
 
             //Try to include an external config file.
-            if(file_exists($extConfigPath)) {
+            if (file_exists($extConfigPath)) {
                 $configfile = DataUtil::formatForOS($extConfigPath);
                 require_once $configfile;
             }
-            
+
         }
 
         define('K_TCPDF_EXTERNAL_CONFIG', true);
     }
-    
+
     private function setStandardConfig(&$pdf)
     {
         global $l; //Used by Tcpdf for language
@@ -163,7 +179,7 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
 
         // set default header data
         $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
-        $pdf->setFooterData($tc=array(0,64,0), $lc=array(0,64,128));
+        $pdf->setFooterData($tc = array(0, 64, 0), $lc = array(0, 64, 128));
 
         // set header and footer fonts
         $pdf->setHeaderFont(Array(PDF_FONT_NAME_HEADER, '', PDF_FONT_SIZE_HEADER));
@@ -178,7 +194,7 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
         //set auto page breaks
-        $pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+        $pdf->SetAutoPageBreak(true, PDF_MARGIN_BOTTOM);
 
         //set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
@@ -193,33 +209,18 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
 
         $pdf->SetFont(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN);
     }
-    
+
     /**
-     * Includes the TCPDF language file.
+     * Get plugin meta data.
      *
-     * @param $langcode (string) The language to use in the pdf. (default = system language)
+     * @return array Meta data.
      */
-    private function includeLangFile($langcode)
+    protected function getMeta()
     {
-        if(empty($langcode)) {
-            $lang = ZLanguage::getInstance();
-            $langcode = $lang->getLanguageCodeLegacy();
-        }
-
-        if($langcode == 'deu') {
-            $langcode = 'ger';
-        }
-        $langfile = DataUtil::formatForOS("plugins/Tcpdf/lib/vendor/tcpdf/config/lang/{$langcode}.php");
-        if (!file_exists($langfile)) {
-            $langfile = DataUtil::formatForOS('plugins/Tcpdf/lib/vendor/tcpdf/config/lang/eng.php');
-        }
-        require_once($langfile);
-    }
-
-    private function checkPermission()
-    {
-        $cacheDir = $this->baseDir . '/lib/vendor/tcpdf/cache';
-        if(!is_writable($cacheDir))
-            die($this->__("$cacheDir must be writeable!"));
+        return array(
+            'displayname' => $this->__('TCPDF'),
+            'description' => $this->__('Provides the TCPDF pdf generating library'),
+            'version'     => '1.0.3'
+        );
     }
 }

@@ -15,6 +15,6 @@ function smarty_modifier_generatePdf($html)
     $tcpdf = PluginUtil::loadPlugin('SystemPlugin_Tcpdf_Plugin');
     $pdf = $tcpdf->createPdf();
     $pdf->AddPage();
-    $pdf->writeHTMLCell($w=0, $h=0, $x='', $y='', $html);
+    $pdf->writeHTMLCell($w = 0, $h = 0, $x = '', $y = '', $html);
     $pdf->Output(PageUtil::getVar('title') . '.pdf', 'I');
 }

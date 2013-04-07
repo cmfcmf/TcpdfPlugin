@@ -30,232 +30,232 @@
 
 /**
  * Configuration file for TCPDF.
- * @author Nicola Asuni, edited by Christian Flach for Zikula TCPDF Plugin
+ * @author  Nicola Asuni, edited by Christian Flach for Zikula TCPDF Plugin
  * @package com.tecnick.tcpdf
  * @version 4.9.005
- * @since 2004-10-27
+ * @since   2004-10-27
  */
 
 
-	// DOCUMENT_ROOT fix for IIS Webserver
-	if ((!isset($_SERVER['DOCUMENT_ROOT'])) OR (empty($_SERVER['DOCUMENT_ROOT']))) {
-		if(isset($_SERVER['SCRIPT_FILENAME'])) {
-			$_SERVER['DOCUMENT_ROOT'] = str_replace( '\\', '/', substr($_SERVER['SCRIPT_FILENAME'], 0, 0-strlen($_SERVER['PHP_SELF'])));
-		} elseif(isset($_SERVER['PATH_TRANSLATED'])) {
-			$_SERVER['DOCUMENT_ROOT'] = str_replace( '\\', '/', substr(str_replace('\\\\', '\\', $_SERVER['PATH_TRANSLATED']), 0, 0-strlen($_SERVER['PHP_SELF'])));
-		} else {
-			// define here your DOCUMENT_ROOT path if the previous fails (e.g. '/var/www')
-			$_SERVER['DOCUMENT_ROOT'] = '/';
-		}
-	}
-	
-	// Automatic calculation for the following K_PATH_MAIN constant
-    $k_path_main = str_replace( '\\', '/', realpath(dirname(__FILE__)));
-    if (substr($k_path_main, -1) != '/') {
-        $k_path_main .= '/';
+// DOCUMENT_ROOT fix for IIS Webserver
+if ((!isset($_SERVER['DOCUMENT_ROOT'])) OR (empty($_SERVER['DOCUMENT_ROOT']))) {
+    if (isset($_SERVER['SCRIPT_FILENAME'])) {
+        $_SERVER['DOCUMENT_ROOT'] = str_replace('\\', '/', substr($_SERVER['SCRIPT_FILENAME'], 0, 0 - strlen($_SERVER['PHP_SELF'])));
+    } elseif (isset($_SERVER['PATH_TRANSLATED'])) {
+        $_SERVER['DOCUMENT_ROOT'] = str_replace('\\', '/', substr(str_replace('\\\\', '\\', $_SERVER['PATH_TRANSLATED']), 0, 0 - strlen($_SERVER['PHP_SELF'])));
+    } else {
+        // define here your DOCUMENT_ROOT path if the previous fails (e.g. '/var/www')
+        $_SERVER['DOCUMENT_ROOT'] = '/';
     }
-    $k_path_main .= '/vendor/tcpdf';
+}
 
-	/**
-	 * Installation path (/var/www/tcpdf/).
-	 * By default it is automatically calculated but you can also set it as a fixed string to improve performances.
-	 */
-	define ('K_PATH_MAIN', $k_path_main);
+// Automatic calculation for the following K_PATH_MAIN constant
+$k_path_main = str_replace('\\', '/', realpath(dirname(__FILE__)));
+if (substr($k_path_main, -1) != '/') {
+    $k_path_main .= '/';
+}
+$k_path_main .= '/vendor/tcpdf';
 
-	// Automatic calculation for the following K_PATH_URL constant
-	$k_path_url = $k_path_main; // default value for console mode
-	if (isset($_SERVER['HTTP_HOST']) AND (!empty($_SERVER['HTTP_HOST']))) {
-		if(isset($_SERVER['HTTPS']) AND (!empty($_SERVER['HTTPS'])) AND strtolower($_SERVER['HTTPS'])!='off') {
-			$k_path_url = 'https://';
-		} else {
-			$k_path_url = 'http://';
-		}
-		$k_path_url .= $_SERVER['HTTP_HOST'];
-		$k_path_url .= str_replace( '\\', '/', substr(K_PATH_MAIN, (strlen($_SERVER['DOCUMENT_ROOT']) - 1)));
-	}
+/**
+ * Installation path (/var/www/tcpdf/).
+ * By default it is automatically calculated but you can also set it as a fixed string to improve performances.
+ */
+define ('K_PATH_MAIN', $k_path_main);
 
-	/**
-	 * URL path to tcpdf installation folder (http://localhost/tcpdf/).
-	 * By default it is automatically calculated but you can also set it as a fixed string to improve performances.
-	 */
-	define ('K_PATH_URL', $k_path_url);
+// Automatic calculation for the following K_PATH_URL constant
+$k_path_url = $k_path_main; // default value for console mode
+if (isset($_SERVER['HTTP_HOST']) AND (!empty($_SERVER['HTTP_HOST']))) {
+    if (isset($_SERVER['HTTPS']) AND (!empty($_SERVER['HTTPS'])) AND strtolower($_SERVER['HTTPS']) != 'off') {
+        $k_path_url = 'https://';
+    } else {
+        $k_path_url = 'http://';
+    }
+    $k_path_url .= $_SERVER['HTTP_HOST'];
+    $k_path_url .= str_replace('\\', '/', substr(K_PATH_MAIN, (strlen($_SERVER['DOCUMENT_ROOT']) - 1)));
+}
 
-	/**
-	 * path for PDF fonts
-	 * use K_PATH_MAIN.'fonts/old/' for old non-UTF8 fonts
-	 */
-	define ('K_PATH_FONTS', K_PATH_MAIN.'/fonts/');
+/**
+ * URL path to tcpdf installation folder (http://localhost/tcpdf/).
+ * By default it is automatically calculated but you can also set it as a fixed string to improve performances.
+ */
+define ('K_PATH_URL', $k_path_url);
 
-	/**
-	 * cache directory for temporary files (full path)
-	 */
-	define ('K_PATH_CACHE', K_PATH_MAIN.'/cache/');
+/**
+ * path for PDF fonts
+ * use K_PATH_MAIN.'fonts/old/' for old non-UTF8 fonts
+ */
+define ('K_PATH_FONTS', K_PATH_MAIN . '/fonts/');
 
-	/**
-	 * cache directory for temporary files (url path)
-	 */
-	define ('K_PATH_URL_CACHE', K_PATH_URL.'cache/');
+/**
+ * cache directory for temporary files (full path)
+ */
+define ('K_PATH_CACHE', K_PATH_MAIN . '/cache/');
 
-	/**
-	 *images directory
-	 */
-	define ('K_PATH_IMAGES', '');
+/**
+ * cache directory for temporary files (url path)
+ */
+define ('K_PATH_URL_CACHE', K_PATH_URL . 'cache/');
 
-	/**
-	 * blank image
-	 */
-	define ('K_BLANK_IMAGE', K_PATH_MAIN .'images/_blank.png');
+/**
+ *images directory
+ */
+define ('K_PATH_IMAGES', '');
 
-	/**
-	 * page format
-	 */
-	define ('PDF_PAGE_FORMAT', 'A4');
+/**
+ * blank image
+ */
+define ('K_BLANK_IMAGE', K_PATH_MAIN . 'images/_blank.png');
 
-	/**
-	 * page orientation (P=portrait, L=landscape)
-	 */
-	define ('PDF_PAGE_ORIENTATION', 'P');
+/**
+ * page format
+ */
+define ('PDF_PAGE_FORMAT', 'A4');
 
-	/**
-	 * document creator
-	 */
-	define ('PDF_CREATOR', 'TCPDF');
+/**
+ * page orientation (P=portrait, L=landscape)
+ */
+define ('PDF_PAGE_ORIENTATION', 'P');
 
-	/**
-	 * document author
-	 */
-	define ('PDF_AUTHOR', System::getVar('sitename'));
+/**
+ * document creator
+ */
+define ('PDF_CREATOR', 'TCPDF');
 
-	/**
-	 * header title
-	 */
-	define ('PDF_HEADER_TITLE', PageUtil::getVar('title'));
+/**
+ * document author
+ */
+define ('PDF_AUTHOR', System::getVar('sitename'));
 
-	/**
-	 * header description string
-	 */
-	define ('PDF_HEADER_STRING', "by " . System::getVar('sitename') . "\n" . System::getVar('defaultmetadescription'));
+/**
+ * header title
+ */
+define ('PDF_HEADER_TITLE', PageUtil::getVar('title'));
 
-	/**
-	 * image logo
-	 */
-	define ('PDF_HEADER_LOGO', 'images/logo.gif');
+/**
+ * header description string
+ */
+define ('PDF_HEADER_STRING', "by " . System::getVar('sitename') . "\n" . System::getVar('defaultmetadescription'));
 
-	/**
-	 * header logo image width [mm]
-	 */
-	define ('PDF_HEADER_LOGO_WIDTH', 15);
+/**
+ * image logo
+ */
+define ('PDF_HEADER_LOGO', 'images/logo.gif');
 
-	/**
-	 *  document unit of measure [pt=point, mm=millimeter, cm=centimeter, in=inch]
-	 */
-	define ('PDF_UNIT', 'mm');
+/**
+ * header logo image width [mm]
+ */
+define ('PDF_HEADER_LOGO_WIDTH', 15);
 
-	/**
-	 * header margin
-	 */
-	define ('PDF_MARGIN_HEADER', 5);
+/**
+ *  document unit of measure [pt=point, mm=millimeter, cm=centimeter, in=inch]
+ */
+define ('PDF_UNIT', 'mm');
 
-	/**
-	 * footer margin
-	 */
-	define ('PDF_MARGIN_FOOTER', 10);
+/**
+ * header margin
+ */
+define ('PDF_MARGIN_HEADER', 5);
 
-	/**
-	 * top margin
-	 */
-	define ('PDF_MARGIN_TOP', 20);
+/**
+ * footer margin
+ */
+define ('PDF_MARGIN_FOOTER', 10);
 
-	/**
-	 * bottom margin
-	 */
-	define ('PDF_MARGIN_BOTTOM', 15);
+/**
+ * top margin
+ */
+define ('PDF_MARGIN_TOP', 20);
 
-	/**
-	 * left margin
-	 */
-	define ('PDF_MARGIN_LEFT', 20);
+/**
+ * bottom margin
+ */
+define ('PDF_MARGIN_BOTTOM', 15);
 
-	/**
-	 * right margin
-	 */
-	define ('PDF_MARGIN_RIGHT', 10);
+/**
+ * left margin
+ */
+define ('PDF_MARGIN_LEFT', 20);
 
-	/**
-	 * default main font name
-	 */
-	define ('PDF_FONT_NAME_MAIN', 'dejavusanscondensed');
+/**
+ * right margin
+ */
+define ('PDF_MARGIN_RIGHT', 10);
 
-	/**
-	 * default main font size
-	 */
-	define ('PDF_FONT_SIZE_MAIN', 9);
+/**
+ * default main font name
+ */
+define ('PDF_FONT_NAME_MAIN', 'dejavusanscondensed');
 
-    /**
-     * default header font name
-     */
-    define ('PDF_FONT_NAME_HEADER', 'dejavusanscondensed');
+/**
+ * default main font size
+ */
+define ('PDF_FONT_SIZE_MAIN', 9);
 
-    /**
-     * default main font size
-     */
-    define ('PDF_FONT_SIZE_HEADER', 11);
+/**
+ * default header font name
+ */
+define ('PDF_FONT_NAME_HEADER', 'dejavusanscondensed');
 
-	/**
-	 * default data font name
-	 */
-	define ('PDF_FONT_NAME_DATA', 'dejavusans');
+/**
+ * default main font size
+ */
+define ('PDF_FONT_SIZE_HEADER', 11);
 
-	/**
-	 * default data font size
-	 */
-	define ('PDF_FONT_SIZE_DATA', 8);
+/**
+ * default data font name
+ */
+define ('PDF_FONT_NAME_DATA', 'dejavusans');
 
-	/**
-	 * default monospaced font name
-	 */
-	define ('PDF_FONT_MONOSPACED', 'dejavusansmono');
+/**
+ * default data font size
+ */
+define ('PDF_FONT_SIZE_DATA', 8);
 
-	/**
-	 * ratio used to adjust the conversion of pixels to user units
-	 */
-	define ('PDF_IMAGE_SCALE_RATIO', 1.25);
+/**
+ * default monospaced font name
+ */
+define ('PDF_FONT_MONOSPACED', 'dejavusansmono');
 
-	/**
-	 * magnification factor for titles
-	 */
-	define('HEAD_MAGNIFICATION', 1.1);
+/**
+ * ratio used to adjust the conversion of pixels to user units
+ */
+define ('PDF_IMAGE_SCALE_RATIO', 1.25);
 
-	/**
-	 * height of cell respect font height
-	 */
-	define('K_CELL_HEIGHT_RATIO', 1.25);
+/**
+ * magnification factor for titles
+ */
+define('HEAD_MAGNIFICATION', 1.1);
 
-	/**
-	 * title magnification respect main font size
-	 */
-	define('K_TITLE_MAGNIFICATION', 1.3);
+/**
+ * height of cell respect font height
+ */
+define('K_CELL_HEIGHT_RATIO', 1.25);
 
-	/**
-	 * reduction factor for small font
-	 */
-	define('K_SMALL_RATIO', 2/3);
+/**
+ * title magnification respect main font size
+ */
+define('K_TITLE_MAGNIFICATION', 1.3);
 
-	/**
-	 * set to true to enable the special procedure used to avoid the overlappind of symbols on Thai language
-	 */
-	define('K_THAI_TOPCHARS', true);
+/**
+ * reduction factor for small font
+ */
+define('K_SMALL_RATIO', 2 / 3);
 
-	/**
-	 * if true allows to call TCPDF methods using HTML syntax
-	 * IMPORTANT: For security reason, disable this feature if you are printing user HTML content.
-	 */
-	define('K_TCPDF_CALLS_IN_HTML', true);
+/**
+ * set to true to enable the special procedure used to avoid the overlappind of symbols on Thai language
+ */
+define('K_THAI_TOPCHARS', true);
 
-	/**
-	 * if true adn PHP version is greater than 5, then the Error() method throw new exception instead of terminating the execution.
-	 */
-	define('K_TCPDF_THROW_EXCEPTION_ERROR', false);
+/**
+ * if true allows to call TCPDF methods using HTML syntax
+ * IMPORTANT: For security reason, disable this feature if you are printing user HTML content.
+ */
+define('K_TCPDF_CALLS_IN_HTML', true);
+
+/**
+ * if true adn PHP version is greater than 5, then the Error() method throw new exception instead of terminating the execution.
+ */
+define('K_TCPDF_THROW_EXCEPTION_ERROR', false);
 
 //============================================================+
 // END OF FILE

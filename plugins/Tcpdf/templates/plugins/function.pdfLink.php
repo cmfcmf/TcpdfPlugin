@@ -32,7 +32,7 @@ function smarty_function_pdfLink($params, Zikula_View $view)
     unset($args['func']);
     $args['theme'] = 'pdf';
 
-    if($params['tag']) {
+    if ($params['tag']) {
         $result = "<a href=\"" . ModUtil::url($get['module'], $get['type'], $get['func'], $args) . "\">{$params['text']}</a>";
     } else {
         $result = ModUtil::url($get['module'], $get['type'], $get['func'], $args);
