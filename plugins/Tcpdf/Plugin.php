@@ -95,6 +95,123 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
         return $pdf;
     }
 
+    /**
+     * @param        $code The code to generate the barcode of.
+     * @param string $type The type of the barcode, for available types see below.
+     * @param int    $width The width of *one* bar.
+     * @param int    $height The height of *oen* bar.
+     * @param string $color The color of the bars.
+     *
+     * @return string The barcode as html.
+     *
+     * @note It is not possible to return the barcode in other formats than html (like png / svg), because TCPDF returns them directly in the browser which destroys your page.
+     *
+     * Possible types:
+     * - C39 : CODE 39 - ANSI MH10.8M-1983 - USD-3 - 3 of 9.
+     * - C39+ : CODE 39 with checksum
+     * - C39E : CODE 39 EXTENDED
+     * - C39E+ : CODE 39 EXTENDED + CHECKSUM
+     * - C93 : CODE 93 - USS-93
+     * - S25 : Standard 2 of 5
+     * - S25+ : Standard 2 of 5 + CHECKSUM
+     * - I25 : Interleaved 2 of 5
+     * - I25+ : Interleaved 2 of 5 + CHECKSUM
+     * - C128 : CODE 128
+     * - C128A : CODE 128 A
+     * - C128B : CODE 128 B
+     * - C128C : CODE 128 C
+     * - EAN2 : 2-Digits UPC-Based Extention
+     * - EAN5 : 5-Digits UPC-Based Extention
+     * - EAN8 : EAN 8
+     * - EAN13 : EAN 13
+     * - UPCA : UPC-A
+     * - UPCE : UPC-E
+     * - MSI : MSI (Variation of Plessey code)
+     * - MSI+ : MSI + CHECKSUM (modulo 11)
+     * - POSTNET : POSTNET
+     * - PLANET : PLANET
+     * - RMS4CC : RMS4CC (Royal Mail 4-state Customer Code) - CBC (Customer Bar Code)
+     * - KIX : KIX (Klant index - Customer index)
+     * - IMB: Intelligent Mail Barcode - Onecode - USPS-B-3200
+     * - CODABAR : CODABAR
+     * - CODE11 : CODE 11
+     * - PHARMA : PHARMACODE
+     * - PHARMA2T : PHARMACODE TWO-TRACKS
+     */
+    public function createBarcode1d($code, $type = 'C128', /*$format = 'html',*/ $width = 2, $height = 30, $color = 'black')
+    {
+        /*
+        if(!isset($color)) {
+            if($format != 'png') {
+                $color = 'black';
+            } else {
+                $color = array(0, 0, 0);
+            }
+        }
+        */
+        // include 1D barcode class
+        require_once('plugins/Tcpdf/lib/vendor/tcpdf/barcodes.php');
+
+        // set the barcode content and type
+        $barcode = new TCPDFBarcode($code, $type);
+
+        //switch($format) {
+        //    case 'html':
+                // output the barcode as HTML object
+                return $barcode->getBarcodeHTML($width, $height, $color);
+        //    break;
+        //    case 'png':
+        //        $png = $barcode->getBarcodePNG($width, $height, $color);
+        //        //return path to file
+        //        return 'images/logo.gif';
+        //    break;
+        //}
+    }
+
+    /**
+     * @param        $code The code to generate the barcode of.
+     * @param string $type The type of the barcode, for available types see below.
+     * @param int    $width The width of a pixel / dot.
+     * @param int    $height The height of a pixel / dot.
+     * @param string $color The color of the pixels / dots.
+     *
+     * @return string The barcode as html.
+     *
+     * @note It is not possible to return the barcode in other formats than html (like png / svg), because TCPDF returns them directly in the browser which destroys your page.
+     *
+     * Possible types:
+     * - DATAMATRIX : Datamatrix (ISO/IEC 16022)
+     * - PDF417 : PDF417 (ISO/IEC 15438:2006)
+     * - PDF417,a,e,t,s,f,o0,o1,o2,o3,o4,o5,o6 : PDF417 with parameters: a = aspect ratio (width/height); e = error correction level (0-8); t = total number of macro segments; s = macro segment index (0-99998); f = file ID; o0 = File Name (text); o1 = Segment Count (numeric); o2 = Time Stamp (numeric); o3 = Sender (text); o4 = Addressee (text); o5 = File Size (numeric); o6 = Checksum (numeric). NOTES: Parameters t, s and f are required for a Macro Control Block, all other parametrs are optional. To use a comma character ',' on text options, replace it with the character 255: "\xff".
+     * - QRCODE : QRcode Low error correction
+     * - QRCODE,L : QRcode Low error correction
+     * - QRCODE,M : QRcode Medium error correction
+     * - QRCODE,Q : QRcode Better error correction
+     * - QRCODE,H : QR-CODE Best error correction
+     * - RAW: raw mode - comma-separad list of array rows
+     * - RAW2: raw mode - array rows are surrounded by square parenthesis.
+     * - TEST : Test matrix
+     */
+    public function createBarcode2d($code, $type = 'QRCODE,H', /*$format = 'html',*/ $width = 6, $height = 6, $color = 'black')
+    {
+        /*
+        if(!isset($color)) {
+            if($format != 'png') {
+                $color = 'black';
+            } else {
+                $color = array(0, 0, 0);
+            }
+        }
+        */
+        // include 2D barcode class
+        require_once('plugins/Tcpdf/lib/vendor/tcpdf/2dbarcodes.php');
+        // set the barcode content and type
+        $barcode = new TCPDF2DBarcode($code, $type);
+
+        // output the barcode as HTML object
+        return $barcode->getBarcodeHTML($width, $height, $color);
+    }
+
     private function checkPermission()
     {
         $cacheDir = $this->baseDir . '/lib/vendor/tcpdf/cache';

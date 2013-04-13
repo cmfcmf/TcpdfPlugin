@@ -16,18 +16,23 @@ The TCPDF plugin implements the [TCPDF class for generating PDF documents](http:
 
 ## For normal users
 
-### Smarty modifier for templates
+### PDF generation
 
-You can add the `{pdfLink tag=true __text='Download as PDF'}` modifier to your template. This will generate a link for downloading the current page as PDF file.
+#### Link in templates to download this page as PDF
+Add the `{pdfLink tag=true __text='Download as PDF'}` tag to your template. This will generate a link for downloading the current page as PDF file.
 
-### Direct link
+#### Direct link to download a page as PDF
+Add `&theme=pdf` to any link, the page will be outputed as PDF file.
 
-If you add `&theme=pdf` to any link, the page will be outputed as PDF file.
+### Barcode generation
+***For further parameters and examples please visit [https://github.com/cmfcmf/Tcpdf/wiki/Barcodes](https://github.com/cmfcmf/Tcpdf/wiki/Barcodes).
+- For 1D codes, add `{barcode1d code='yourCode'}` to your template.
+- For 2D codes, add `{barcode2d code='yourCode'}` to your template.
 
 ## For developers
 
 ### PDF generation
-Simply add the two following lines of code. This will include the language files and the tcpdf config class:
+Simply add the two following lines of code. This will include the language files and the TCPDF config class:
 
 ```php
 $tcpdf = PluginUtil::loadPlugin('SystemPlugin_Tcpdf_Plugin');
@@ -38,7 +43,7 @@ That will directly return a `new TCPDF()` object. Below you see the arguments pa
 
 ```php
 /**
- * Creates a new pdf file.
+ * Creates a new PDF file.
  *
  * @param $orientation (string) page orientation.
  * @param $unit (string) User measure unit.
@@ -48,15 +53,15 @@ That will directly return a `new TCPDF()` object. Below you see the arguments pa
  * @param $diskcache (boolean) If TRUE reduce the RAM memory usage by caching temporary data on filesystem (slower).
  * @param $pdfa (boolean) If TRUE set the document to PDF/A mode.
  *
- * @param $langcode (string) The language to use in the pdf. (default = system language)
+ * @param $langcode (string) The language to use in the PDF. (default = system language)
  *
  * @return new TCPDF()
  *
- * @note The first seven parameters are inherited from tcpdf.
+ * @note The first seven parameters are inherited from TCPDF.
  */
 ```
 
-For further documentation visit the [TCPDF documentation](http://www.tcpdf.org/doc/code/annotated.html).
+For further documentation visit the [TCPDF documentation](http://www.TCPDF.org/doc/code/annotated.html).
 
 ### External configuration file
 
