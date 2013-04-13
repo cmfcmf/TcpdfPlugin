@@ -35,10 +35,15 @@ function smarty_function_barcode1d($params, Zikula_View $view)
     $tcpdf = PluginUtil::loadPlugin('SystemPlugin_Tcpdf_Plugin');
     $result = $tcpdf->createBarcode1d($code, $type, /*$format,*/ $width, $height, $color);
 
+    $theme = UserUtil::getTheme();
 
-    if (isset($params['assign'])) {
-        $view->assign($params['assign'], $result);
+    if($theme != 'pdf') {
+        if (isset($params['assign'])) {
+            $view->assign($params['assign'], $result);
+        } else {
+            return $result;
+        }
     } else {
-        return $result;
+        return "!--TCPDFBARCODE dimension='1D' code='$code' type='$type' width='$width' height='$height' color='$color'--!";
     }
 }

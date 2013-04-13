@@ -32,12 +32,18 @@ function smarty_function_barcode2d($params, Zikula_View $view)
     $height = (isset($params['height'])) ? $params['height'] : '6';
     $color = (isset($params['color'])) ? $params['color'] : 'black';
 
-    $tcpdf = PluginUtil::loadPlugin('SystemPlugin_Tcpdf_Plugin');
-    $result = $tcpdf->createBarcode2d($code, $type, /*$format,*/ $width, $height, $color);
+    $theme = UserUtil::getTheme();
 
-    if (isset($params['assign'])) {
-        $view->assign($params['assign'], $result);
+    if($theme != 'pdf') {
+        $tcpdf = PluginUtil::loadPlugin('SystemPlugin_Tcpdf_Plugin');
+        $result = $tcpdf->createBarcode2d($code, $type, /*$format,*/ $width, $height, $color);
+
+        if (isset($params['assign'])) {
+            $view->assign($params['assign'], $result);
+        } else {
+            return $result;
+        }
     } else {
-        return $result;
+        return "!--TCPDFBARCODE dimension='2D' code='$code' type='$type' width='$width' height='$height' color='$color'--!";
     }
 }
