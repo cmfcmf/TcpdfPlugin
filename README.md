@@ -25,7 +25,7 @@ Add the `{pdfLink tag=true __text='Download as PDF'}` tag to your template. This
 Add `&theme=pdf` to any link, the page will be outputed as PDF file.
 
 ### Barcode generation
-***For further parameters and examples please visit [https://github.com/cmfcmf/Tcpdf/wiki/Barcodes](https://github.com/cmfcmf/Tcpdf/wiki/Barcodes).
+***For further parameters and examples please visit [https://github.com/cmfcmf/Tcpdf/wiki/Barcodes](https://github.com/cmfcmf/Tcpdf/wiki/Barcodes).***
 - For 1D codes, add `{barcode1d code='yourCode'}` to your template.
 - For 2D codes, add `{barcode2d code='yourCode'}` to your template.
 
