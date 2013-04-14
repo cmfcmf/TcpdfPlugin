@@ -2,7 +2,7 @@ TCPDF plugin usage
 ----------------------------------------
 
 # Overview
-The TCPDF plugin implements the [TCPDF class for generating PDF documents](http://www.tcpdf.org/).
+The TCPDF plugin implements the [TCPDF class for generating PDF documents and barcodes](http://www.tcpdf.org/).
 
 *Please note: This is still a beta version. Please submit pull requests if you have improvements or report issues!*
 
