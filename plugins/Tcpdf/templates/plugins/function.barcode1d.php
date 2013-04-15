@@ -12,6 +12,8 @@
  *
  * Basic usage:
  *  {barcode1d code='yourCode'}
+ * Advanced usage:
+ *  {barcode1d code='http://www.zikula.org' type='CODABAR' color='green' width=4 height=50}
  *
  * @param array       $params All attributes passed to this function from the template.
  * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
@@ -32,18 +34,17 @@ function smarty_function_barcode1d($params, Zikula_View $view)
     $height = (isset($params['height'])) ? $params['height'] : '30';
     $color = (isset($params['color'])) ? $params['color'] : 'black';
 
-    $tcpdf = PluginUtil::loadPlugin('SystemPlugin_Tcpdf_Plugin');
-    $result = $tcpdf->createBarcode1d($code, $type, /*$format,*/ $width, $height, $color);
-
     $theme = UserUtil::getTheme();
-
     if($theme != 'pdf') {
-        if (isset($params['assign'])) {
-            $view->assign($params['assign'], $result);
-        } else {
-            return $result;
-        }
+        $tcpdf = PluginUtil::loadPlugin('SystemPlugin_Tcpdf_Plugin');
+        $result = $tcpdf->createBarcode1d($code, $type, /*$format,*/ $width, $height, $color);
     } else {
-        return "!--TCPDFBARCODE dimension='1D' code='$code' type='$type' width='$width' height='$height' color='$color'--!";
+        $result = "!--TCPDFBARCODE dimension='1D' code='$code' type='$type' width='$width' height='$height' color='$color'--!";
+    }
+    
+    if (isset($params['assign'])) {
+        $view->assign($params['assign'], $result);
+    } else {
+        return $result;
     }
 }

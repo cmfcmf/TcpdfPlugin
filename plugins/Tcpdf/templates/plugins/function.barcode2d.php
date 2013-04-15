@@ -12,6 +12,8 @@
  *
  * Basic usage:
  *  {barcode2d code='yourCode'}
+ * Advanced usage:
+ *  {barcode2d code='http://www.zikula.org' type='DATAMATRIX' color='green' width=4 height=4}
  *
  * @param array       $params All attributes passed to this function from the template.
  * @param Zikula_View $view   Reference to the {@link Zikula_View} object.
@@ -27,23 +29,22 @@ function smarty_function_barcode2d($params, Zikula_View $view)
 
     $code = $params['code'];
     $type = (isset($params['type'])) ? $params['type'] : 'QRCODE,H';
-    $format = (isset($params['format'])) ? $params['format'] : 'html';
+    //$format = (isset($params['format'])) ? $params['format'] : 'html';
     $width = (isset($params['width'])) ? $params['width'] : '6';
     $height = (isset($params['height'])) ? $params['height'] : '6';
     $color = (isset($params['color'])) ? $params['color'] : 'black';
 
     $theme = UserUtil::getTheme();
-
     if($theme != 'pdf') {
         $tcpdf = PluginUtil::loadPlugin('SystemPlugin_Tcpdf_Plugin');
         $result = $tcpdf->createBarcode2d($code, $type, /*$format,*/ $width, $height, $color);
-
-        if (isset($params['assign'])) {
-            $view->assign($params['assign'], $result);
-        } else {
-            return $result;
-        }
     } else {
-        return "!--TCPDFBARCODE dimension='2D' code='$code' type='$type' width='$width' height='$height' color='$color'--!";
+        $result = "!--TCPDFBARCODE dimension='2D' code='$code' type='$type' width='$width' height='$height' color='$color'--!";
+    }
+    
+    if (isset($params['assign'])) {
+        $view->assign($params['assign'], $result);
+    } else {
+        return $result;
     }
 }
