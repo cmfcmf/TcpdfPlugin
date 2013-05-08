@@ -442,7 +442,7 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
         return array(
             'displayname' => $this->__('TCPDF'),
             'description' => $this->__('Provides the TCPDF pdf generating library'),
-            'version'     => '1.0.4'
+            'version'     => '1.0.3'
         );
     }
 }
