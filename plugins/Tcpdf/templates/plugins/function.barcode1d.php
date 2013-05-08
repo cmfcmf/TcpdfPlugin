@@ -29,18 +29,19 @@ function smarty_function_barcode1d($params, Zikula_View $view)
 
     $code = $params['code'];
     $type = (isset($params['type'])) ? $params['type'] : 'C128';
-    //$format = (isset($params['format'])) ? $params['format'] : 'html';
+    $format = (isset($params['format'])) ? $params['format'] : 'png';
     $width = (isset($params['width'])) ? $params['width'] : '2';
     $height = (isset($params['height'])) ? $params['height'] : '30';
     $color = (isset($params['color'])) ? $params['color'] : 'black';
 
+    //Force png format for pdf generation if html or svgcode is used, because html and svgcode won't work!
     $theme = UserUtil::getTheme();
-    if($theme != 'pdf') {
-        $tcpdf = PluginUtil::loadPlugin('SystemPlugin_Tcpdf_Plugin');
-        $result = $tcpdf->createBarcode1d($code, $type, /*$format,*/ $width, $height, $color);
-    } else {
-        $result = "!--TCPDFBARCODE dimension='1D' code='$code' type='$type' width='$width' height='$height' color='$color'--!";
+    if($theme == 'pdf' && ($format != 'png' || $format != 'svgcode')) {
+        $format = 'png';
     }
+
+    $tcpdf = PluginUtil::loadPlugin('SystemPlugin_Tcpdf_Plugin');
+        $result = $tcpdf->createBarcode1d($code, $type, $width, $height, $color, $format);
     
     if (isset($params['assign'])) {
         $view->assign($params['assign'], $result);

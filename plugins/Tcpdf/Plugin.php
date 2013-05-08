@@ -6,6 +6,8 @@
  */
 class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_Plugin_ConfigurableInterface
 {
+    public $pathToBarcodeCache;
+
     /**
      * Performs install routine.
      *
@@ -39,6 +41,15 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
     {
         //Add plugins dir
         $this->addHandlerDefinition('view.init', 'registerPlugins');
+
+        //Create temp dir if not exists
+        if(!isset($this->pathToBarcodeCache)) {
+            $this->pathToBarcodeCache = CacheUtil::getLocalDir('systemplugin.tcpdf/barcodes');;
+        }
+
+        if(!is_readable($this->pathToBarcodeCache)) {
+            CacheUtil::createLocalDir('systemplugin.tcpdf/barcodes');
+        }
     }
 
     /**
@@ -80,15 +91,16 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
      */
     public function createPdf($orientation = 'P', $unit = 'mm', $format = 'A4', $unicode = true, $encoding = 'UTF-8', $diskcache = false, $pdfa = false, $langcode = '')
     {
-        $this->checkPermission();
+        $cacheDir = $this->baseDir . '/lib/vendor/tcpdf/cache';
+        if (!is_writable($cacheDir)) {
+            die($this->__("$cacheDir must be writeable!"));
+        }
 
         $this->includeLangFile($langcode);
         $this->includeConfigFile();
 
-        $classfile = DataUtil::formatForOS('plugins/Tcpdf/lib/vendor/tcpdf/tcpdf.php');
-        require_once($classfile);
-
-        $pdf = new TCPDF($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
+        require_once('plugins/Tcpdf/lib/tcpdf_custom.php');
+        $pdf = new TCPDFCustom($orientation, $unit, $format, $unicode, $encoding, $diskcache, $pdfa);
 
         $this->setStandardConfig($pdf);
 
@@ -96,11 +108,13 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
     }
 
     /**
-     * @param        $code The code to generate the barcode of.
-     * @param string $type The type of the barcode, for available types see below.
-     * @param int    $width The width of *one* bar.
+     * @param        $code   The code to generate the barcode of.
+     * @param string $type   The type of the barcode, for available types see below.
+     * @param int    $width  The width of *one* bar.
      * @param int    $height The height of *oen* bar.
-     * @param string $color The color of the bars.
+     * @param string $color  The color of the bars.
+     * @param string $format The file format of the barcode, for available types see below.
+     * @param bool   $force  Foce regeneration of barcode.
      *
      * @return string The barcode as html.
      *
@@ -137,47 +151,61 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
      * - CODE11 : CODE 11
      * - PHARMA : PHARMACODE
      * - PHARMA2T : PHARMACODE TWO-TRACKS
+     *
+     * Possible file formats:
+     * - html:    The barcode is generated out of lots of <div> tags.
+     * - png:     The barcode is generated as png file and included with an <img> tag (caching enabled).
+     * - svg:     The barcode is generated as svg file and included with an <img> tag (caching enabled).
+     * - svgcode: The barcode is generated as svg code which can be directly used in html.
      */
-    public function createBarcode1d($code, $type = 'C128', /*$format = 'html',*/ $width = 2, $height = 30, $color = 'black')
+    public function createBarcode1d($code, $type = 'C128', $width = 2, $height = 30, $color = 'black', $format = 'png', $force = false)
     {
-        /*
-        if(!isset($color)) {
-            if($format != 'png') {
-                $color = 'black';
-            } else {
-                $color = array(0, 0, 0);
-            }
-        }
-        */
-        // include 1D barcode class
-        require_once('plugins/Tcpdf/lib/vendor/tcpdf/barcodes.php');
+        $color = $this->convertColorForFormat($color, $format);
 
-        // set the barcode content and type
-        $barcode = new TCPDFBarcode($code, $type);
+        $this->includeFile('tcpdf_barcodes_1d');
+        $barcode = new TCPDFBarcodeCustom($code, $type);
 
-        //switch($format) {
-        //    case 'html':
-                // output the barcode as HTML object
+        switch($format) {
+            case 'html':
                 return $barcode->getBarcodeHTML($width, $height, $color);
-        //    break;
-        //    case 'png':
-        //        $png = $barcode->getBarcodePNG($width, $height, $color);
-        //        //return path to file
-        //        return 'images/logo.gif';
-        //    break;
-        //}
+                break;
+            case 'png':
+                $filename = $this->pathToBarcodeCache . '/' . md5('1D' . $code . $type . $width . $height . implode('', $color) . $format) . '.png';
+
+                //Check if barcode already exists:
+                if(!is_readable($filename) || $force) {
+                    $barcode->getBarcodePNG($width, $height, $color, $filename);
+                }
+                return '<img src="' . $filename . '" alt="' . $code . '" />';
+                break;
+            case 'svg':
+                $filename = $this->pathToBarcodeCache . '/' . md5('1D' . $code . $type . $width . $height . $color . $format) . '.svg';
+
+                //Check if barcode already exists:
+                if(!is_readable($filename) || $force) {
+                    $barcode->getBarcodeSVG($width, $height, $color, $filename);
+                }
+
+                return '<img src="' . $filename . '" alt="' . $code . '" />';
+                break;
+            case 'svgcode':
+                return $barcode->getBarcodeSVGcode($width, $height, $color);
+                break;
+            default:
+                break;
+        }
     }
 
     /**
-     * @param        $code The code to generate the barcode of.
-     * @param string $type The type of the barcode, for available types see below.
-     * @param int    $width The width of a pixel / dot.
+     * @param        $code   The code to generate the barcode of.
+     * @param string $type   The type of the barcode, for available types see below.
+     * @param int    $width  The width of a pixel / dot.
      * @param int    $height The height of a pixel / dot.
-     * @param string $color The color of the pixels / dots.
+     * @param string $color  The color of the pixels / dots.
+     * @param string $format The file format of the barcode, for available types see below.
+     * @param bool   $force  Foce regeneration of barcode.
      *
      * @return string The barcode as html.
-     *
-     * @note It is not possible to return the barcode in other formats than html (like png / svg), because TCPDF returns them directly in the browser which destroys your page.
      *
      * Possible types:
      * - DATAMATRIX : Datamatrix (ISO/IEC 16022)
@@ -191,33 +219,110 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
      * - RAW: raw mode - comma-separad list of array rows
      * - RAW2: raw mode - array rows are surrounded by square parenthesis.
      * - TEST : Test matrix
+     *
+     * Possible file formats:
+     * - html:    The barcode is generated out of lots of <div> tags.
+     * - png:     The barcode is generated as png file and included with an <img> tag (caching enabled).
+     * - svg:     The barcode is generated as svg file and included with an <img> tag (caching enabled).
+     * - svgcode: The barcode is generated as svg code which can be directly used in html.
      */
-    public function createBarcode2d($code, $type = 'QRCODE,H', /*$format = 'html',*/ $width = 6, $height = 6, $color = 'black')
+    public function createBarcode2d($code, $type = 'QRCODE,H', $width = 6, $height = 6, $color = 'black', $format = 'png', $force = false)
     {
-        /*
-        if(!isset($color)) {
-            if($format != 'png') {
-                $color = 'black';
-            } else {
-                $color = array(0, 0, 0);
-            }
-        }
-        */
-        // include 2D barcode class
-        require_once('plugins/Tcpdf/lib/vendor/tcpdf/2dbarcodes.php');
-        // set the barcode content and type
-        $barcode = new TCPDF2DBarcode($code, $type);
+        $color = $this->convertColorForFormat($color, $format);
 
-        // output the barcode as HTML object
-        return $barcode->getBarcodeHTML($width, $height, $color);
+        $this->includeFile('tcpdf_barcodes_2d');
+        $barcode = new TCPDF2DBarcodeCustom($code, $type);
+
+        switch($format) {
+            case 'html':
+                return $barcode->getBarcodeHTML($width, $height, $color);
+                break;
+            case 'png':
+                $filename = $this->pathToBarcodeCache . '/' . md5('2D' . $code . $type . $width . $height . implode('', $color) . $format) . '.png';
+
+                //Check if barcode already exists:
+                if(!is_readable($filename) || $force) {
+                    $barcode->getBarcodePNG($width, $height, $color, $filename);
+                }
+                return '<img src="' . $filename . '" alt="' . $code . '" />';
+                break;
+            case 'svg':
+                $filename = $this->pathToBarcodeCache . '/' . md5('2D' . $code . $type . $width . $height . $color . $format) . '.svg';
+
+                //Check if barcode already exists:
+                if(!is_readable($filename) || $force) {
+                    $barcode->getBarcodeSVG($width, $height, $color, $filename);
+                }
+
+                return '<img src="' . $filename . '" alt="' . $code . '" />';
+                break;
+            case 'svgcode':
+                return $barcode->getBarcodeSVGcode($width, $height, $color);
+                break;
+            default:
+                break;
+        }
     }
 
-    private function checkPermission()
-    {
-        $cacheDir = $this->baseDir . '/lib/vendor/tcpdf/cache';
-        if (!is_writable($cacheDir)) {
-            die($this->__("$cacheDir must be writeable!"));
+    /**
+     * Converts a hexadecimal html color to an rgb array.
+     * @param $hex (string) The color string, example: #383ffd.
+     *
+     * @return array The rgb color array.
+     */
+    public function str2rgb($str) {
+        $this->includeFile('tcpdf_colors');
+        $colorArray = TCPDF_COLORS::$webcolor;
+        $hex = $colorArray[$str];
+
+        $hex = str_replace("#", "", $hex);
+
+        if(strlen($hex) == 3) {
+            $r = hexdec(substr($hex,0,1).substr($hex,0,1));
+            $g = hexdec(substr($hex,1,1).substr($hex,1,1));
+            $b = hexdec(substr($hex,2,1).substr($hex,2,1));
+        } else {
+            $r = hexdec(substr($hex,0,2));
+            $g = hexdec(substr($hex,2,2));
+            $b = hexdec(substr($hex,4,2));
         }
+        $rgb = array($r, $g, $b);
+        return $rgb; // returns an array with the rgb values
+    }
+
+    private function convertColorForFormat($color, $format)
+    {
+        if($format == 'png' && is_string($color)) {
+            return $this->str2rgb($color);
+        } else if ($format != 'png' && is_array($color)) {
+            $this->includeFile('tcpdf_colors');
+            return TCPDF_COLORS::getColorStringFromArray($color);
+        }
+        return $color;
+    }
+
+    /**
+     * Includes a native tcpdf file or a customized one.
+     * @param $filename
+     *
+     * @throws Zikula_Exception
+     */
+    public function includeFile($filename) {
+        $basePath = 'plugins/Tcpdf/lib/';
+
+        $paths[] = $basePath . $filename . '_custom.php';
+        $paths[] = $basePath . 'vendor/tcpdf/' . $filename . '.php';
+        $paths[] = $basePath . 'vendor/tcpdf/include/' . $filename . '.php';
+
+
+        foreach($paths as $path) {
+            if (is_readable($path)) {
+                require_once($path);
+                return;
+            }
+        }
+
+        throw new Zikula_Exception("File $filename could not be found!");
     }
 
     /**
@@ -283,7 +388,7 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
         define('K_TCPDF_EXTERNAL_CONFIG', true);
     }
 
-    private function setStandardConfig(&$pdf)
+    private function setStandardConfig(TCPDFCustom &$pdf)
     {
         global $l; //Used by Tcpdf for language
 
@@ -337,7 +442,7 @@ class SystemPlugin_Tcpdf_Plugin extends Zikula_AbstractPlugin implements Zikula_
         return array(
             'displayname' => $this->__('TCPDF'),
             'description' => $this->__('Provides the TCPDF pdf generating library'),
-            'version'     => '1.0.3'
+            'version'     => '1.0.4'
         );
     }
 }
