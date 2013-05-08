@@ -2,7 +2,7 @@
 //============================================================+
 // File name   : example_052.php
 // Begin       : 2009-05-07
-// Last Update : 2011-07-06
+// Last Update : 2013-03-17
 //
 // Description : Example 052 for TCPDF class
 //               Certification Signature (experimental)
@@ -12,9 +12,6 @@
 // (c) Copyright:
 //               Nicola Asuni
 //               Tecnick.com LTD
-//               Manor Coach House, Church Hill
-//               Aldershot, Hants, GU12 4RQ
-//               UK
 //               www.tecnick.com
 //               info@tecnick.com
 //============================================================+
@@ -74,7 +71,7 @@ NOTES:
 */
 
 // set certificate file
-$certificate = 'file://../tcpdf.crt';
+$certificate = 'file://../config/cert/tcpdf.crt';
 
 // set additional information
 $info = array(

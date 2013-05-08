@@ -1,3 +1,59 @@
+6.0.012 (2013-04-24)
+	- An error condition in addHtmlLink() method was fixed (bug #799).
+
+6.0.011 (2013-04-22)
+	- Minor documentation changes.
+
+6.0.010 (2013-04-03)
+	- The method Rect() was fixed to print borders correctly.
+
+6.0.009 (2013-04-02)
+	- Adding back some files that were not properly committed on the latest release.
+
+6.0.008 (2013-04-01)
+	- Duplicated encoding maps was removed from tcpdf_font_data.php.
+	- Fixing bug on AddTTFFont().
+
+6.0.007 (2013-03-29)
+	- HTML/CSS font size conversion were improved.
+
+6.0.006 (2013-03-27)
+	- Bug related to SVG and EPS files on xobjects were fixed.
+
+6.0.005 (2013-03-26)
+	- Default font path was fixed.
+
+6.0.004 (2013-03-21)
+	- Return value of addTTFfont() method was fixed.
+
+6.0.003 (2013-03-20)
+	- A bug related to non-unicode mode was fixed.
+
+6.0.002 (2013-03-18)
+	- _getFIXED call on tcpdf_fonts.php was fixed.
+
+6.0.001 (2013-03-18)
+	- Fixed $uni_type call on tcpdf.php.
+
+6.0.000 (2013-03-17)
+	- IMPORTANT: PHP4 support has been removed starting from this version.
+	- Several TCPDF methods and vars were moved to new class files: tcpdf_static.php, tcpdf_colors.php, tcpdf_images.php, tcpdf_font_data.php, tcpdf_fonts.php.
+	- Files htmlcolors.php, spotcolors.php, unicode_data.php and ecodings_maps.php were removed.
+	- Barcode classes were renamed and new barcode examples were added.
+	- Class TCPDF_PARSER was improved.
+
+********************************************************************************
+
+5.9.209 (2013-03-15)
+	- Image method was improved.
+
+5.9.208 (2013-03-15)
+	- objclone fuction was patched to support old imagick extensions.
+	- tcpdf_parser was improved to support Cross-Reference Streams and large streams.
+
+5.9.207 (2013-03-04)
+	- Datamatrix class was fixed (a debug echo was removed).
+
 5.9.206 (2013-02-22)
 	- Bug item #754 "PNG with alpha channel becomes gray scale" was fixed.
 	- Minor documentation fixes.

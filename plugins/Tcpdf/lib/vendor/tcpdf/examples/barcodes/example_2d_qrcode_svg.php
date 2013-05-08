@@ -1,13 +1,13 @@
 <?php
 //============================================================+
-// File name   : spotcolors.php
-// Version     : 1.0.001
-// Begin       : 2010-11-11
-// Last Update : 2011-10-03
-// Author      : Nicola Asuni - Tecnick.com LTD - Manor Coach House, Church Hill, Aldershot, Hants, GU12 4RQ, UK - www.tecnick.com - info@tecnick.com
+// File name   : example_2d_svg.php
+// Version     : 1.0.000
+// Begin       : 2011-07-21
+// Last Update : 2013-03-17
+// Author      : Nicola Asuni - Tecnick.com LTD - www.tecnick.com - info@tecnick.com
 // License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
 // -------------------------------------------------------------------
-// Copyright (C) 2002-2012  Nicola Asuni - Tecnick.com LTD
+// Copyright (C) 2009-2013 Nicola Asuni - Tecnick.com LTD
 //
 // This file is part of TCPDF software library.
 //
@@ -27,33 +27,26 @@
 // See LICENSE.TXT file for more information.
 // -------------------------------------------------------------------
 //
-// Description : Array of Spot Colors for TCPDF library
+// Description : Example for tcpdf_barcodes_2d.php class
 //
 //============================================================+
 
 /**
  * @file
- * Arrays of Spot Colors for TCPDF library
- * @author Nicola Asuni
+ * Example for tcpdf_barcodes_2d.php class
  * @package com.tecnick.tcpdf
- * @since 5.9.012 (2010-11-11)
-*/
-
-/**
- * Array of Spot colors (C,M,Y,K,name)
- * Color keys must be in lowercase and without spaces.
- * As long as no open standard for spot colours exists, you have to buy a colour book by one of the colour manufacturers and insert the values and names of spot colours directly.
- * Common industry standard spot colors are: ANPA-COLOR, DIC, FOCOLTONE, GCMI, HKS, PANTONE, TOYO, TRUMATCH.
+ * @author Nicola Asuni
+ * @version 1.0.009
  */
-$spotcolor = array (
-	// the following are just examples, fill the array with your own values
-	'mytcpdfblack' => array(0, 0, 0, 100, 'My TCPDF Black'),
-	'mytcpdfred' => array(30, 100, 90, 10, 'My TCPDF Red'),
-	'mytcpdfgreen' => array(100, 30, 100, 0, 'My TCPDF Green'),
-	'mytcpdfblue' => array(100, 60, 10, 5, 'My TCPDF Blue'),
-	'mytcpdfyellow' => array(0, 20, 100, 0, 'My TCPDF Yellow'),
-	// ...
-);
+
+// include 2D barcode class
+require_once(dirname(__FILE__).'/../../tcpdf_barcodes_2d.php');
+
+// set the barcode content and type
+$barcodeobj = new TCPDF2DBarcode('http://www.tcpdf.org', 'QRCODE,H');
+
+// output the barcode as SVG image
+$barcodeobj->getBarcodeSVG(6, 6, 'black');
 
 //============================================================+
 // END OF FILE
