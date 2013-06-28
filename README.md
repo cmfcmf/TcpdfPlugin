@@ -88,3 +88,6 @@ define ('PDF_FONT_SIZE_MAIN', 30);
 # Contribute
 
 Pull requests and issue-reportings are most welcome!
+
+# License
+GNU/GPLv3 (or at your option, any later version).
