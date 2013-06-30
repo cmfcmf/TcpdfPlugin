@@ -92,4 +92,4 @@ Pull requests and issue-reportings are most welcome!
 # License
 GNU/GPLv3 (or at your option, any later version).
 
-**Important:** This project contains the TCPDF project which is licensed under GNU/LGPLv3. You find the files under `plugins/Tcpdf/lib/vendor/tcpdf
+**Important:** This project contains the TCPDF project which is licensed under GNU/LGPLv3. You find the files under `plugins/Tcpdf/lib/vendor/tcpdf`
