@@ -66,8 +66,8 @@ For further documentation visit the [TCPDF documentation](http://www.TCPDF.org/d
 ### External configuration file
 
 If you'd like to use an external configuration file, simply place it in:
-- `modules/Foo/lib/vendor/tcpdf_foo_config.php` (Zikula <= 1.3.5)
-- `modules/Foo/vendor/tcpdf_foo_config.php` (Zikula >= 1.3.6)
+- `modules/Foo/lib/vendor/tcpdf_foo_config.php` (Zikula <= 1.3.6)
+- `modules/Foo/vendor/tcpdf_foo_config.php` (Zikula >= 1.3.7)
 
 Only define values in there, which are different from the original config file.
 
