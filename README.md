@@ -1,5 +1,8 @@
-TCPDF plugin usage
-----------------------------------------
+----------------
+
+# This plugin is not maintained nor updated anymore. Please use the [PDFModule](https://github.com/cmfcmf/PDFModule) as well as the [PDFTheme](https://github.com/cmfcmf/PDFTheme) instead.
+
+----------------
 
 # Overview
 The TCPDF plugin implements the [TCPDF class for generating PDF documents and barcodes](http://www.tcpdf.org/).
